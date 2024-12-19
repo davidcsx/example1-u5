@@ -1,3 +1,6 @@
+// Connection pooling is implemented using libraries like HikariCP.
+// Below is an example of how connection pooling can optimize a shipping management system:
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
