@@ -1,0 +1,37 @@
+// Using prepared statements ensures security and efficiency.
+// Below is an example for bulk inserting shipping records:
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class ShippingDataUpload {
+    public static void main(String[] args) throws Exception {
+        String url = "jdbc:mysql://localhost:3306/shipping_db";
+        String username = "db_user";
+        String password = "db_password";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "INSERT INTO shipments (tracking_number, sender, recipient, status) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, "TRK001");
+                stmt.setString(2, "John Doe");
+                stmt.setString(3, "Jane Smith");
+                stmt.setString(4, "In Transit");
+                stmt.addBatch();
+
+                stmt.setString(1, "TRK002");
+                stmt.setString(2, "Alice Brown");
+                stmt.setString(3, "Bob White");
+                stmt.setString(4, "Delivered");
+                stmt.addBatch();
+
+                // Execute batch update
+                stmt.executeBatch();
+                System.out.println("Shipment data inserted successfully!");
+            }
+        }
+    }
+}
+
+// This ensures efficient bulk inserts for daily shipping manifests.
