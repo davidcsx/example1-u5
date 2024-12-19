@@ -1,0 +1,35 @@
+// Effective exception handling ensures uninterrupted operations when updating shipment data.
+// Here’s an example:
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class ShipmentUpdate {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/shipping_db";
+        String username = "db_user";
+        String password = "db_password";
+
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            String sql = "UPDATE shipments SET location = ? WHERE tracking_number = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, "Distribution Center B");
+                stmt.setString(2, "TRK12345");
+                int rowsUpdated = stmt.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    System.out.println("Shipment location updated successfully!");
+                } else {
+                    System.out.println("No shipment found with the given tracking number.");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while updating shipment data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+// This ensures the system logs errors and notifies administrators of issues with updates.
